@@ -61,7 +61,6 @@ Public Sub CompareTables()
     'strTableNew = "SIS FGS IO (Rev8)"
     strJoin = "COMPONENT_ID"
     
-    
     'strTableOld = "PCS Wiring (Rev6)"
     'strTableNew = "PCS Wiring (Rev7)"
     'strTableOld = "SIS FGS Wiring (Rev5)"
