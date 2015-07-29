@@ -50,6 +50,7 @@ Public Sub CompareTables()
     'Dim rsNew As DAO.Recordset
     Dim db As DAO.Database
     Dim fld As DAO.Field
+    Dim qdf As QueryDef
     
     '//---------------------------------------------------------------------//
     '       Define which tables to compare and which field to join
@@ -58,7 +59,7 @@ Public Sub CompareTables()
     strTableNew = "PCS IO (Rev9)"
     'strTableOld = "SIS FGS IO (Rev7)"
     'strTableNew = "SIS FGS IO (Rev8)"
-    strJoin = "COMPONENT"
+    strJoin = "COMPONENT_ID"
     
     'strTableOld = "PCS Wiring (Rev6)"
     'strTableNew = "PCS Wiring (Rev7)"
@@ -91,7 +92,7 @@ Public Sub CompareTables()
 
     End If
 
-    If (strJoin = "COMPONENT") Then
+    If (strJoin = "COMPONENT_ID") Then
         intIncludeFields = 10
         ReDim strIncludeFields(intIncludeFields)
         
