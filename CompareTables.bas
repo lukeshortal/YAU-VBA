@@ -18,6 +18,7 @@ Public Sub CompareTables()
     '//     Revision 0.0
     '//---------------------------------------------------------------------//
     '//     This function takes two tables and compares the records
+    '//     Would be useful to compare two revisions of an I/O or Modbus list
     '//
     '//     Set "strTableOld" as the name of the original table
     '//     Set "strTableNew" as the name of the new table
@@ -30,7 +31,11 @@ Public Sub CompareTables()
     '//         A LEFT JOIN to find all new and modified records
     '//         A RIGHT JOIN to find all deleted and modified records
     '//
-    '//     ToDo: Add "Build the xxxx SQL statement" to seperate function
+    '//     ToDo: Add "Build the xxxx SQL statement" to seperate function:
+    '//         Essentially the same code is used twice to build LEFT/RIGHT statements.
+    '//         Instead, create a seperate function and use "strJoinLRU" to differentiate query types
+    '//     ToDo: Init "strIncludeFields" in seperate function (clear up clutter)
+    '//     ToDo: Run "Set qdf" in seperate function (query creation may not always be required)
     '//
     '//---------------------------------------------------------------------//
 
