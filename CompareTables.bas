@@ -2,20 +2,13 @@ Attribute VB_Name = "CompareTables"
 Option Compare Database
 Option Explicit
 
-        
-Public Sub Run()
-
-    DoCmd.Save acModule, "CompareTables"
-    CompareTables
-
-End Sub
-
     
 Public Sub CompareTables()
 
     '//---------------------------------------------------------------------//
     '//     Luke Shortal 2015-07-28
     '//     Revision 0.0
+    '//     Revision 0.1
     '//---------------------------------------------------------------------//
     '//     This function takes two tables and compares the records
     '//     Would be useful to compare two revisions of an I/O or Modbus list
