@@ -1,5 +1,4 @@
-Attribute VB_Name = "FormatWWTable"
-Option Compare Database
+Attribute VB_Name = "DelStrikethroughText"
 
 Option Explicit
 
