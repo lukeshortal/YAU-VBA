@@ -1,12 +1,17 @@
-Sub DelStrikethroughText()
+Attribute VB_Name = "FormatWWTable"
+Option Compare Database
+
+Option Explicit
+
+Function DelStrikethroughText()
    'Deletes strikethrough text in all selected cells
    Dim Cell    As Range
    For Each Cell In Selection
       DelStrikethroughs Cell
    Next Cell
-End Sub
+End Function
 
-Sub DelStrikethroughs(Cell As Range)
+Function DelStrikethroughs(Cell As Range)
    'deletes all strikethrough text in the Cell
    Dim NewText    As String
    Dim iCh        As Integer
@@ -19,4 +24,4 @@ Sub DelStrikethroughs(Cell As Range)
    Next iCh
    Cell.Value = NewText
    Cell.Characters.Font.Strikethrough = False
-End Sub
+End Function
