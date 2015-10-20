@@ -2,6 +2,7 @@ Attribute VB_Name = "CombineSpreadsheets"
 
 Sub CombineSpreadsheets()
     Dim Path As String
+    'Make sure the Path has a trailing "\"
     Path = "C:\share\Output\"
     FileName = Dir(Path & "*.csv")
     'FileName = Dir(Path & "*.xls")
