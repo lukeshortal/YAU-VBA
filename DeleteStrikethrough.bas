@@ -1,26 +1,5 @@
 Attribute VB_Name = "DelStrikethroughText"
 
-Option Explicit
-
-Function DelStrikethroughText()
-   'Deletes strikethrough text in all selected cells
-   Dim Cell    As Range
-   For Each Cell In Selection
-      DelStrikethroughs Cell
-   Next Cell
-End Function
-
-Function DelStrikethroughs(Cell As Range)
-   'deletes all strikethrough text in the Cell
-   Dim NewText    As String
-   Dim iCh        As Integer
-   For iCh = 1 To Len(Cell)
-      With Cell.Characters(iCh, 1)
-         If .Font.Strikethrough = False Then
-            NewText = NewText & .Text
-         End If
-      End With
-   Next iCh
-   Cell.Value = NewText
-   Cell.Characters.Font.Strikethrough = False
+Function HasStrike(Rng As Range) As Boolean
+   HasStrike = Rng.Font.Strikethrough
 End Function
