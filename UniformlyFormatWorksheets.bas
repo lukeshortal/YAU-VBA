@@ -221,7 +221,7 @@ Sub UniformlyFormatWorksheets()
     
     Next i
   
-    MsgBox Finished
+    MsgBox "Finished"
 
     
 End Sub
