@@ -1,9 +1,10 @@
 Attribute VB_Name = "FormatWWTable"
+
 Option Compare Database
 
 Option Explicit
 
-Public Function FormatWW()
+Public Function FormatWWXW()
 
 
     '//---------------------------------------------------------------------//
@@ -12,11 +13,14 @@ Public Function FormatWW()
     '  Cs_strProject_WW table can then be used to cross reference between DIOTAG and %WB/%XB tables
     '
     '  If Cs_strProject_WW_Formatted already exists, it will be deleted by this function
+    '  Set strWWXW to "WW" or "XW" depending on which table you wish to export
     '//---------------------------------------------------------------------//
 
     Dim strSQL As String
     Dim strProject As String
+    Dim strWWXW As String
     Dim strAddresses() As String
+    Dim strIPAddresses() As String
     Dim strCurrentFCS
     
     Dim i, j As Integer
@@ -26,26 +30,30 @@ Public Function FormatWW()
     Dim db As DAO.Database
 
     Set db = CurrentDb
-    strProject = "INPEXCCP"
+    '//---------------------------------------------------------------------//
+    '  Set strWWXW to "WW" or "XW"
+    '//---------------------------------------------------------------------//
+    strWWXW = "WW"
+    'strWWXW = "XW"
     
-    Debug.Print "Exporting WW_Formatted Table"
+    Debug.Print "Exporting " & strWWXW & "_Formatted Table"
 
                  
-    strSQL = "SELECT Cs_" & strProject & "_WW.* " & _
-        "FROM Cs_" & strProject & "_WW;"
+    strSQL = "SELECT " & strWWXW & ".* FROM " & strWWXW & ";"
         'Debug.Print strSQL
 
     Set rs = db.OpenRecordset(strSQL)
     rs.MoveLast                                                                             'Force complete retrieval to obtain a valid recordcount
     ReDim strAddresses(rs.RecordCount)
+    ReDim strIPAddresses(rs.RecordCount)
     rs.MoveFirst                                                                            'Go back to the beginning before we start the loop
     
     '//---------------------------------------------------------------------//
     'Delete and recreate the WW Formatted table
-    If Not IsNull(DLookup("Name", "MSysObjects", "Name='Cs_" & strProject & "_WW_Formatted' And Type In (1,4,6)")) Then
-        DoCmd.DeleteObject acTable, "Cs_" & strProject & "_WW_Formatted"
+    If Not IsNull(DLookup("Name", "MSysObjects", "Name='" & strWWXW & "_Formatted' And Type In (1,4,6)")) Then
+        DoCmd.DeleteObject acTable, "" & strWWXW & "_Formatted"
     End If
-    Set tdf = CurrentDb.CreateTableDef("Cs_" & strProject & "_WW_Formatted")
+    Set tdf = CurrentDb.CreateTableDef("" & strWWXW & "_Formatted")
     With tdf
         .Fields.Append .CreateField("FCS", dbText)
         .Fields.Append .CreateField("IOADDR/SYSTAG", dbText)
@@ -92,6 +100,11 @@ Public Function FormatWW()
         '[Port]
         
         '[IP_ADDRESS]
+        strIPAddresses(i) = rs![IP_ADDRESS]                                                 'Save the Addresses into an array
+        If (Len(rs![IP_ADDRESS]) = 1) Then
+            strIPAddresses(i) = strIPAddresses(i - 1)                                       'Get the previous address
+        End If
+        rs![IP_ADDRESS] = strIPAddresses(i)
         
         '[STATION]
         
@@ -126,7 +139,7 @@ Public Function FormatWW()
         '//---------------------------------------------------------------------//
         'Insert the record into the newly created "WW_Formatted" table
         If (Len(rs![Size]) > 0) Then                                                        'Don't worry about empty records
-            strSQL = "INSERT INTO Cs_" & strProject & "_WW_Formatted VALUES (" & _
+            strSQL = "INSERT INTO " & strWWXW & "_Formatted VALUES (" & _
                         "'" & rs![FCS] & "'," & _
                         "'" & rs![IOADDR/SYSTAG] & "'," & _
                         "'" & rs![BUFFER] & "'," & _
