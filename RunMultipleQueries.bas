@@ -5,7 +5,7 @@ Dim dbs As DAO.Database
 Set dbs = CurrentDb
 
 ' Execute runs both saved queries and SQL strings
-cstrQueryName = "MakeTable Compare GTG Priority"
+cstrQueryName = "example_query_name"
 Debug.Print "Exporting: " & cstrQueryName
 dbs.Execute cstrQueryName, dbFailOnError
 DoEvents
