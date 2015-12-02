@@ -1,4 +1,3 @@
-Attribute VB_Name = "CompareTables"
 Option Compare Database
 Option Explicit
 
@@ -53,17 +52,17 @@ Public Sub CompareTables()
     '//---------------------------------------------------------------------//
     '       Define which tables to compare and which field to join
     '//---------------------------------------------------------------------//
-    strTableOld = "PCS IO (Rev8)"
-    strTableNew = "PCS IO (Rev9)"
-    'strTableOld = "SIS FGS IO (Rev7)"
-    'strTableNew = "SIS FGS IO (Rev8)"
-    strJoin = "COMPONENT_ID"
     
-    'strTableOld = "PCS Wiring (Rev6)"
-    'strTableNew = "PCS Wiring (Rev7)"
-    'strTableOld = "SIS FGS Wiring (Rev5)"
-    'strTableNew = "SIS FGS Wiring (Rev6)"
-    'strJoin = "COMPONENT_IDWIRE_TAG"
+    'SysDbAliasStr
+    strTableOld = "SysDbAliasStr"
+    strTableNew = "LS 99 SysDbAliasStr"
+    strJoin = "signalName"
+
+    'SysDbSignalStr
+'    strTableOld = "SysDbSignalStr"
+'    strTableNew = "LS 99 SysDbSignalStr"
+'    strJoin = "signalName"
+
     '//---------------------------------------------------------------------//
 
     strQueryName = strTableNew
@@ -71,50 +70,56 @@ Public Sub CompareTables()
     '//---------------------------------------------------------------------//
     '       Define which fields to include in comparison
     '//---------------------------------------------------------------------//
-    If (strJoin = "COMPONENT_IDWIRE_TAG") Then
-        intIncludeFields = 6
+    'SysDbAliasStr
+    If (strTableOld = "SysDbAliasStr") Then
+        intIncludeFields = 3
         ReDim strIncludeFields(intIncludeFields)
         
         i = 1
-        strIncludeFields(i) = "MC_NAME"
+        strIncludeFields(i) = "proc_no"
         i = i + 1
-        strIncludeFields(i) = "MC_TS_NAME"
+        strIncludeFields(i) = "signalName"
         i = i + 1
-        strIncludeFields(i) = "MC_TS_TERM_NO"
-        i = i + 1
-        strIncludeFields(i) = "WIRE_TAG"
-        i = i + 1
-        strIncludeFields(i) = "JB_CABLE_TYPE"
-        i = i + 1
-        strIncludeFields(i) = "JB_CABLE_NM"
+        strIncludeFields(i) = "aliasName"
 
     End If
-
-    If (strJoin = "COMPONENT_ID") Then
-        intIncludeFields = 10
+    
+    'SysDbSignalStr
+    If (strTableOld = "SysDbSignalStr") Then
+        intIncludeFields = 5
         ReDim strIncludeFields(intIncludeFields)
         
         i = 1
-        strIncludeFields(i) = "FCS"
+        strIncludeFields(i) = "proc_no"
         i = i + 1
-        strIncludeFields(i) = "SIGNAL_ORIGIN"
+        strIncludeFields(i) = "signalName"
         i = i + 1
-        strIncludeFields(i) = "RACK_NODE"
+        strIncludeFields(i) = "sig_type"
         i = i + 1
-        strIncludeFields(i) = "SLOT"
+        strIncludeFields(i) = "signalDesc"
         i = i + 1
-        strIncludeFields(i) = "CHANNEL"
-        i = i + 1
-        strIncludeFields(i) = "ICSS_TAG"
-        i = i + 1
-        strIncludeFields(i) = "TGCOMM"
-        i = i + 1
-        strIncludeFields(i) = "TGCOMM2"
-        i = i + 1
-        strIncludeFields(i) = "DIO_STATUS_1_LABEL"
-        i = i + 1
-        strIncludeFields(i) = "DIO_STATUS_0_LABEL"
-        i = i + 1
+        strIncludeFields(i) = "units"
+'        i = i + 1
+'        strIncludeFields(i) = "has_limits"
+'        i = i + 1
+'        strIncludeFields(i) = "lowLimit_ctl"
+'        i = i + 1
+'        strIncludeFields(i) = "lowLimit"
+'        i = i + 1
+'        strIncludeFields(i) = "highLimit_ctl"
+'        i = i + 1
+'        strIncludeFields(i) = "highimit"
+'        i = i + 1
+'        strIncludeFields(i) = "has_defaults"
+'        i = i + 1
+'        strIncludeFields(i) = "default_ctl"
+'        i = i + 1
+'        strIncludeFields(i) = "defVal"
+'        i = i + 1
+'        strIncludeFields(i) = "publisher_process_no"
+'        i = i + 1
+'        strIncludeFields(i) = "malf"
+
     End If
     '//---------------------------------------------------------------------//
     
@@ -140,9 +145,9 @@ Public Sub CompareTables()
         For j = 1 To intIncludeFields
             If (fld.Name = strIncludeFields(j)) Then                        'If fld.Name is a member of the fields to be included...
                 strSQL = strSQL & "[" & strTableOld & "].[" & fld.Name & "], [" & strTableNew & "].[" & fld.Name & "], " & _
-                        "IIf([" & strTableOld & "].[" & fld.Name & "]=[" & strTableNew & "].[" & fld.Name & "],'OK', " & _
                         "IIf(Nz([" & strTableOld & "].[" & fld.Name & "])='','new', " & _
-                        "IIf(Nz([" & strTableNew & "].[" & fld.Name & "])='','deleted','modified')))" & _
+                        "IIf(Nz([" & strTableNew & "].[" & fld.Name & "])='','deleted', " & _
+                        "IIf(Cstr([" & strTableOld & "].[" & fld.Name & "])=Cstr([" & strTableNew & "].[" & fld.Name & "]),'OK','modified'))) " & _
                         "AS [" & fld.Name & " OK], "
             End If
 
@@ -160,9 +165,9 @@ Public Sub CompareTables()
         For j = 1 To intIncludeFields
             If (fld.Name = strIncludeFields(j)) Then                        'If fld.Name is a member of the fields to be included...
                 strSQL = strSQL & "[" & strTableOld & "].[" & fld.Name & "], [" & strTableNew & "].[" & fld.Name & "], " & _
-                        "IIf([" & strTableOld & "].[" & fld.Name & "]=[" & strTableNew & "].[" & fld.Name & "],'OK', " & _
                         "IIf(Nz([" & strTableOld & "].[" & fld.Name & "])='','new', " & _
-                        "IIf(Nz([" & strTableNew & "].[" & fld.Name & "])='','deleted','modified')))" & _
+                        "IIf(Nz([" & strTableNew & "].[" & fld.Name & "])='','deleted', " & _
+                        "IIf(Cstr([" & strTableOld & "].[" & fld.Name & "])=Cstr([" & strTableNew & "].[" & fld.Name & "]),'OK','modified'))) " & _
                         "AS [" & fld.Name & " OK], "
             End If
 
@@ -187,6 +192,7 @@ Public Sub CompareTables()
         Next j
     'Debug.Print strSQL
     
+    'Create compare query
     strQueryName = strTableNew & " Compare"
     If Not IsNull(DLookup("Name", "MSysObjects", "Name='" & strQueryName & "'")) Then
         DoCmd.DeleteObject acQuery, strQueryName
@@ -195,6 +201,17 @@ Public Sub CompareTables()
     
     Debug.Print "Created " & strQueryName
     
+    'Create make table query for compare query
+    strSQL = "SELECT [" & strQueryName & "].* INTO [" & strQueryName & " (tbl)] FROM [" & strQueryName & "];"
+    strQueryName = strTableNew & " Compare (make)"
+    If Not IsNull(DLookup("Name", "MSysObjects", "Name='" & strQueryName & "'")) Then
+        DoCmd.DeleteObject acQuery, strQueryName
+    End If
+    Set qdf = CurrentDb.CreateQueryDef(strQueryName, strSQL)
+    
+    Debug.Print "Created " & strQueryName
+
+
     Set qdf = Nothing
     Set fld = Nothing
     Set rsOld = Nothing
@@ -204,3 +221,4 @@ Public Sub CompareTables()
     
     
 End Sub
+
